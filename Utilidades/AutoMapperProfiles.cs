@@ -22,7 +22,7 @@ namespace MinimalAPIPeliculas.Utilidades
             entidad.MapFrom(p => p.GeneroPeliculas.Select(gp =>
             new GeneroDTO { Id = gp.GeneroId, Nombre = gp.Genero.Nombre })))
                 .ForMember(p => p.Actores, entidad => 
-                    entidad.MapFrom(p => p.ActorPelicula.Select(ga => new ActorPeliculaDTOs { Id = ga.ActorID, Nombre = ga.Actor.Nombre, Personaje = ga.Personaje })));
+                    entidad.MapFrom(p => p.ActorPelicula.Select(ga => new ActorPeliculaDTOs { Id = ga.ActorId, Nombre = ga.Actor.Nombre, Personaje = ga.Personaje })));
 
               
 
