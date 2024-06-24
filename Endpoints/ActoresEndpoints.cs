@@ -17,7 +17,7 @@ namespace MinimalAPIPeliculas.Endpoints
 
         public static RouteGroupBuilder MapActores(this RouteGroupBuilder group)
         {
-            group.MapGet("/", ObtenerTodos)
+            group.MapGet("/", ObtenerTodo)
                 .CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("actores-get"));
             group.MapGet("/{id:int}", ObtenerPorId);
             group.MapGet("obtenerPorNombre/{nombre}", ObtenerPorNombre);
@@ -27,7 +27,7 @@ namespace MinimalAPIPeliculas.Endpoints
             return group;
         }
 
-        static async Task<Ok<List<ActorDTO>>> ObtenerTodos(IRepositorioActores repositorio, IMapper mapper,
+        static async Task<Ok<List<ActorDTO>>> ObtenerTodo(IRepositorioActores repositorio, IMapper mapper,
             int pagina = 1, int recordsPorPagina = 10)
         {
             var paginacion = new PaginacionDTO { Pagina = pagina, RecordsPorPagina = recordsPorPagina };
@@ -46,8 +46,8 @@ namespace MinimalAPIPeliculas.Endpoints
                 return TypedResults.NotFound();
             }
 
-            var actorDTO = mapper.Map<ActorDTO>(actor);
-            return TypedResults.Ok(actorDTO);
+            var actorDTOs = mapper.Map<ActorDTO>(actor);
+            return TypedResults.Ok(actorDTOs);
         }
 
         static async Task<Ok<List<ActorDTO>>> ObtenerPorNombre(string nombre, 
