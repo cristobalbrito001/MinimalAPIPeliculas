@@ -16,3 +16,4 @@ Migrations/20231012184401_Peliculas.Designer.cs
 *.exe
 /obj/Debug/net8.0
 /obj
+test/
