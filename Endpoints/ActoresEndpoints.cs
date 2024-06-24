@@ -46,8 +46,8 @@ namespace MinimalAPIPeliculas.Endpoints
                 return TypedResults.NotFound();
             }
 
-            var actorDTOs = mapper.Map<ActorDTO>(actor);
-            return TypedResults.Ok(actorDTOs);
+            var actorDTO = mapper.Map<ActorDTO>(actor);
+            return TypedResults.Ok(actorDTO);
         }
 
         static async Task<Ok<List<ActorDTO>>> ObtenerPorNombre(string nombre, 
