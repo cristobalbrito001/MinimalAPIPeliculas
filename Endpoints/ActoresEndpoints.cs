@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.IdentityModel.Tokens;
 using MinimalAPIPeliculas.DTOs;
 using MinimalAPIPeliculas.Entidades;
 using MinimalAPIPeliculas.Filtros;
@@ -24,6 +25,7 @@ namespace MinimalAPIPeliculas.Endpoints
             group.MapPost("/", Crear).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearActorDTO>>().RequireAuthorization("admin");
             group.MapPut("/{id:int}", Actualizar).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearActorDTO>>().RequireAuthorization("admin");
             group.MapDelete("/{id:int}", Borrar).RequireAuthorization("admin");
+            group.MapGet("getByName/{nombre}", GetByName).RequireAuthorization("admin");
             return group;
         }
 
@@ -120,6 +122,19 @@ namespace MinimalAPIPeliculas.Endpoints
             await almacenadorArchivos.Borrar(actorDB.Foto, contenedor);
             await outputCacheStore.EvictByTagAsync("actores-get", default);
             return TypedResults.NoContent();
+        }
+
+        static async Task<Results<Ok<List<ActorDTO>>,NoContent>> GetByName(string nombre, IRepositorioActores repositorio, IMapper mapper)
+        {
+            List<Actor> actor = await repositorio.ObtenerPorNombre(nombre);
+
+            if (actor.IsNullOrEmpty())
+            {
+                return TypedResults.NoContent();
+            }
+
+            var actorDTO = mapper.Map<List<ActorDTO>>(actor);
+            return TypedResults.Ok(actorDTO);
         }
     }
 }
