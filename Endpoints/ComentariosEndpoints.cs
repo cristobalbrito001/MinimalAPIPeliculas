@@ -127,7 +127,7 @@ namespace MinimalAPIPeliculas.Endpoints
             {
                 return TypedResults.NotFound();
             }
-            var comentarioBD = await repositorio.ObtenerPorId(id);
+            var comentarioBD = await repositorio.ObtenerPorId(id)!;
             var usuario = await servicioUsuario.ObtenerUsuario();
             if(usuario is null)
             {

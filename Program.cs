@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -113,7 +114,14 @@ app.UseCors();
 
 app.UseOutputCache();
 app.UseAuthorization();
-
+app.MapPost("/modelBingding", ([FromQuery] string? name) =>
+{
+    if(name is null)
+    {
+        name = string.Empty;
+    }
+    return TypedResults.Ok(name);
+});
 app.MapGet("/", [EnableCors(policyName: "libre")] () => "¡Hola, mundo!");
 
 app.MapGroup("/generos").MapGeneros();

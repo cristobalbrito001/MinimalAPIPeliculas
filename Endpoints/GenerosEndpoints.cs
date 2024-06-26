@@ -14,46 +14,47 @@ namespace MinimalAPIPeliculas.Endpoints
         public static RouteGroupBuilder MapGeneros(this RouteGroupBuilder group)
         {
             group.MapGet("/", ObtenerGeneros).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("generos-get"))
-                .RequireAuthorization();
-            group.MapGet("/{id:int}", ObtenerGeneroPorId).AddEndpointFilter<FiltroPrueba>();
+               ;
+            group.MapGet("/{id:int}", ObtenerGeneroPorId);
             group.MapPost("/", CrearGenero).AddEndpointFilter<FiltroValidaciones<CrearGeneroDTO>>().RequireAuthorization("admin");
             group.MapPut("/{id:int}", ActualizarGenero).AddEndpointFilter<FiltroValidaciones<CrearGeneroDTO>>().RequireAuthorization("admin");
             group.MapDelete("/{id:int}", BorrarGenero).RequireAuthorization("admin");
             return group;
         }
 
-        static async Task<Ok<List<GeneroDTO>>> ObtenerGeneros(IRepositorioGeneros repositorio, IMapper mapper)
+        static async Task<Ok<List<GeneroDTO>>> ObtenerGeneros(IRepositorioGeneros repositorio, IMapper mapper,ILoggerFactory loggerFactory)
         {
+            var logger = loggerFactory.CreateLogger(typeof(GenerosEndpoints));
+           
             var generos = await repositorio.ObtenerTodos();
+            logger.LogInformation("Obteniendo los géneros");
             var generosDTO = mapper.Map<List<GeneroDTO>>(generos);
             return TypedResults.Ok(generosDTO);
         }
 
-        static async Task<Results<Ok<GeneroDTO>, NotFound>> ObtenerGeneroPorId(IRepositorioGeneros repositorio, 
-            int id, IMapper mapper)
+        static async Task<Results<Ok<GeneroDTO>, NotFound>> ObtenerGeneroPorId([AsParameters] ObternerGeneroPorIdPeticionDTO obternerGeneroPorIdPeticionDTO )
         {
-            var genero = await repositorio.ObtenerPorId(id);
+            var genero = await obternerGeneroPorIdPeticionDTO.repositorio!.ObtenerPorId(obternerGeneroPorIdPeticionDTO.id);
 
             if (genero is null)
             {
                 return TypedResults.NotFound();
             }
 
-            var generoDTO = mapper.Map<GeneroDTO>(genero);
+            var generoDTO = obternerGeneroPorIdPeticionDTO.mapper!.Map<GeneroDTO>(genero);
 
             return TypedResults.Ok(generoDTO);
         }
 
-        static async Task<Results<Created<GeneroDTO>, ValidationProblem>> CrearGenero(CrearGeneroDTO crearGeneroDTO, 
-            IRepositorioGeneros repositorio,
-            IOutputCacheStore outputCacheStore, IMapper mapper)
+        static async Task<Results<Created<GeneroDTO>, ValidationProblem>> CrearGenero(CrearGeneroDTO crearGeneroDTO, [AsParameters] CrearGeneroRequest peticionDTO 
+           )
         {
            
             
-            var genero = mapper.Map<Genero>(crearGeneroDTO);
-            var id = await repositorio.Crear(genero);
-            await outputCacheStore.EvictByTagAsync("generos-get", default);
-            var generoDTO = mapper.Map<GeneroDTO>(genero);
+            var genero = peticionDTO.mapper!.Map<Genero>(crearGeneroDTO);
+            var id = await peticionDTO.repositorio!.Crear(genero);
+            await peticionDTO.outputCacheStore!.EvictByTagAsync("generos-get", default);
+            var generoDTO = peticionDTO.mapper!.Map<GeneroDTO>(genero);
             return TypedResults.Created($"/generos/{id}", generoDTO);
         }
 
