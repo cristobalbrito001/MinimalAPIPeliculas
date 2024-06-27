@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using MinimalAPIPeliculas.DTOs;
 using MinimalAPIPeliculas.Entidades;
 using MinimalAPIPeliculas.Filtros;
 using MinimalAPIPeliculas.Repositorios;
 using MinimalAPIPeliculas.Servicios;
+using MinimalAPIPeliculas.Utilidades;
 
 namespace MinimalAPIPeliculas.Endpoints
 {
@@ -19,7 +21,8 @@ namespace MinimalAPIPeliculas.Endpoints
         public static RouteGroupBuilder MapActores(this RouteGroupBuilder group)
         {
             group.MapGet("/", ObtenerTodo)
-                .CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("actores-get"));
+                .CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("actores-get"))
+                .AgregarParametrosPaginacionOpenApi();
             group.MapGet("/{id:int}", ObtenerPorId);
             group.MapGet("obtenerPorNombre/{nombre}", ObtenerPorNombre);
             group.MapPost("/", Crear).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearActorDTO>>().RequireAuthorization("admin");
@@ -30,9 +33,9 @@ namespace MinimalAPIPeliculas.Endpoints
         }
 
         static async Task<Ok<List<ActorDTO>>> ObtenerTodo(IRepositorioActores repositorio, IMapper mapper,
-            int pagina = 1, int recordsPorPagina = 10)
+            PaginacionDTO paginacion)
         {
-            var paginacion = new PaginacionDTO { Pagina = pagina, RecordsPorPagina = recordsPorPagina };
+            //var paginacion = new PaginacionDTO { Pagina = pagina, RecordsPorPagina = recordsPorPagina };
             var actores = await repositorio.ObtenerTodos(paginacion);
             var actoresDTO = mapper.Map<List<ActorDTO>>(actores);
             return TypedResults.Ok(actoresDTO);
