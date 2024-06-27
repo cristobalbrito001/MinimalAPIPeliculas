@@ -25,7 +25,7 @@ namespace MinimalAPIPeliculas.Endpoints
             group.MapDelete("/{id:int}", Borrar).RequireAuthorization("admin");
             group.MapPost("/{id:int}/AsignarGeneros", AsignarGeneros).RequireAuthorization("admin");
             group.MapPost("/{id:int}/AsignarActores", AsignarActores).RequireAuthorization("admin");
-            group.MapGet("/filtrar", Filtrar).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("peliculas-get")).AgregarParametrosFiltroPaginacionOpenApi();
+            group.MapGet("/filtrar", Filtrar).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(2)).Tag("peliculas-get")).AgregarParametrosFiltroPaginacionOpenApi();
 
             return group;
         }
