@@ -45,7 +45,11 @@ builder.Services.AddCors(opciones =>
     });
 });
 
-builder.Services.AddOutputCache();
+//builder.Services.AddOutputCache();
+builder.Services.AddStackExchangeRedisOutputCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("redis");
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -159,6 +163,7 @@ app.UseStatusCodePages();
 app.UseCors();
 
 app.UseOutputCache();
+
 app.UseAuthorization();
 app.MapPost("/modelBingding", ([FromQuery] string? name) =>
 {
