@@ -25,8 +25,9 @@ namespace MinimalAPIPeliculas.Endpoints
                 .AgregarParametrosPaginacionOpenApi();
             group.MapGet("/{id:int}", ObtenerPorId);
             group.MapGet("obtenerPorNombre/{nombre}", ObtenerPorNombre);
-            group.MapPost("/", Crear).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearActorDTO>>().RequireAuthorization("admin");
-            group.MapPut("/{id:int}", Actualizar).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearActorDTO>>().RequireAuthorization("admin");
+            group.MapPost("/", Crear).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearActorDTO>>().RequireAuthorization("admin")
+                .WithOpenApi();
+            group.MapPut("/{id:int}", Actualizar).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearActorDTO>>().RequireAuthorization("admin").WithOpenApi();
             group.MapDelete("/{id:int}", Borrar).RequireAuthorization("admin");
             group.MapGet("getByName/{nombre}", GetByName).RequireAuthorization("admin");
             return group;

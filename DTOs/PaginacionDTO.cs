@@ -8,7 +8,7 @@ namespace MinimalAPIPeliculas.DTOs
         private const int paginaValorInicial = 1;
         private const int recordsPorPaginaValorInicial = 10;
         public int Pagina { get; set; } = paginaValorInicial;
-        private int recordsPorPagina = recordsPorPaginaValorInicial;
+        public int recordsPorPagina = recordsPorPaginaValorInicial;
         private readonly int cantidadMaximaRecordsPorPagina = 50;
 
         public int RecordsPorPagina

@@ -20,11 +20,13 @@ namespace MinimalAPIPeliculas.Endpoints
         {
             group.MapGet("/", Obtener).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("peliculas-get")).AgregarParametrosPaginacionOpenApi() ;
             group.MapGet("/{id:int}", ObtenerPorId);
-            group.MapPost("/", Crear).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearPeliculaDTO>>().RequireAuthorization("admin");
-            group.MapPut("/{id:int}", Actualizar).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearPeliculaDTO>>().RequireAuthorization("admin");
+            group.MapPost("/", Crear).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearPeliculaDTO>>().RequireAuthorization("admin").WithOpenApi();
+            group.MapPut("/{id:int}", Actualizar).DisableAntiforgery().AddEndpointFilter<FiltroValidaciones<CrearPeliculaDTO>>().RequireAuthorization("admin").WithOpenApi();
             group.MapDelete("/{id:int}", Borrar).RequireAuthorization("admin");
             group.MapPost("/{id:int}/AsignarGeneros", AsignarGeneros).RequireAuthorization("admin");
             group.MapPost("/{id:int}/AsignarActores", AsignarActores).RequireAuthorization("admin");
+            group.MapGet("/filtrar", Filtrar).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("peliculas-get")).AgregarParametrosFiltroPaginacionOpenApi();
+
             return group;
         }
 
@@ -163,7 +165,13 @@ namespace MinimalAPIPeliculas.Endpoints
             await repositorioPeliculas.AsignarActores(id, actores);
             return TypedResults.NoContent();
         }
+        static async Task<Results<Ok<List<PeliculaDTO>>, BadRequest>> Filtrar( PeliculaFilterDTO peliculaFilterDTO, IRepositorioPeliculas repositorio, IMapper mapper)
+        {
+            var peliculas = await repositorio.Filtrar(peliculaFilterDTO);
+            var peliculasDTO = mapper.Map<List<PeliculaDTO>>(peliculas);
+            return TypedResults.Ok(peliculasDTO);
+        }
 
-        
+
     }
 }

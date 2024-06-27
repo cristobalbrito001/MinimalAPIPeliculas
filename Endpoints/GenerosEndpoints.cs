@@ -17,7 +17,14 @@ namespace MinimalAPIPeliculas.Endpoints
                ;
             group.MapGet("/{id:int}", ObtenerGeneroPorId);
             group.MapPost("/", CrearGenero).AddEndpointFilter<FiltroValidaciones<CrearGeneroDTO>>().RequireAuthorization("admin");
-            group.MapPut("/{id:int}", ActualizarGenero).AddEndpointFilter<FiltroValidaciones<CrearGeneroDTO>>().RequireAuthorization("admin");
+            group.MapPut("/{id:int}", ActualizarGenero).AddEndpointFilter<FiltroValidaciones<CrearGeneroDTO>>().RequireAuthorization("admin").WithOpenApi(options =>
+            {
+                options.Summary = "Actualiza un género";
+                options.Description = "Actualiza un género existente";
+                options.Parameters[0].Description = "El id del género a actualizar";
+                options.RequestBody.Description = "El género a actualizar";
+                return options;
+            });
             group.MapDelete("/{id:int}", BorrarGenero).RequireAuthorization("admin");
             return group;
         }
