@@ -4,6 +4,6 @@ namespace MinimalAPIPeliculas.Repositorios
 {
     public interface IRepositorioErrores
     {
-        Task Crear(Error error);
+        Task Crear(MinimalAPIPeliculas.Entidades.Error error);
     }
 }

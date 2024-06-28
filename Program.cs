@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using MinimalAPIPeliculas;
 using MinimalAPIPeliculas.Endpoints;
 using MinimalAPIPeliculas.Entidades;
+using MinimalAPIPeliculas.GraphQl;
 using MinimalAPIPeliculas.Repositorios;
 using MinimalAPIPeliculas.Servicios;
 using MinimalAPIPeliculas.Swagger;
@@ -23,7 +24,12 @@ var origenesPermitidos = builder.Configuration.GetValue<string>("origenespermiti
 builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
     opciones.UseSqlServer("name=DefaultConnection"));
 
-
+builder.Services.AddGraphQLServer().AddQueryType<Query>()
+    .AddMutationType<Mutacion>()
+    .AddFiltering()
+    .AddSorting()
+    .AddProjections()
+    .AddAuthorization();
 
 builder.Services.AddIdentityCore<IdentityUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -150,7 +156,7 @@ app.UseExceptionHandler(ExceptionHandlerApp =>ExceptionHandlerApp.Run(async cont
 
     var execeptionHandleFeature = context.Features.Get<IExceptionHandlerFeature>();
     var excecion = execeptionHandleFeature?.Error!;
-    Error error = new Error();
+    MinimalAPIPeliculas.Entidades.Error error = new MinimalAPIPeliculas.Entidades.Error();
     error.Fecha = DateTime.UtcNow;
     error.MessageDeError = excecion.Message;
     error.StackTrace = excecion.StackTrace;
@@ -165,6 +171,7 @@ app.UseCors();
 app.UseOutputCache();
 
 app.UseAuthorization();
+app.MapGraphQL();
 app.MapPost("/modelBingding", ([FromQuery] string? name) =>
 {
     if(name is null)

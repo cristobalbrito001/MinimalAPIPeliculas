@@ -19,7 +19,7 @@ namespace MinimalAPIPeliculas.Servicios
             await cliente.CreateIfNotExistsAsync();
             cliente.SetAccessPolicy(PublicAccessType.Blob);
 
-            var extension = Path.GetExtension(archivo.FileName);
+            var extension = System.IO.Path.GetExtension(archivo.FileName);
             var nombreArchivo = $"{Guid.NewGuid()}{extension}";
             var blob = cliente.GetBlobClient(nombreArchivo);
             var blobHttpHeaders = new BlobHttpHeaders();
@@ -37,7 +37,7 @@ namespace MinimalAPIPeliculas.Servicios
 
             var cliente = new BlobContainerClient(connectionString, contenedor);
             await cliente.CreateIfNotExistsAsync();
-            var nombreArchivo = Path.GetFileName(ruta);
+            var nombreArchivo = System.IO.Path.GetFileName(ruta);
             var blob = cliente.GetBlobClient(nombreArchivo);
             await blob.DeleteIfExistsAsync();
         }

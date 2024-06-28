@@ -26,7 +26,7 @@ namespace MinimalAPIPeliculas.Utilidades
                     entidad.MapFrom(p => p.ActorPelicula.Select(ga => new ActorPeliculaDTOs { Id = ga.ActorId, Nombre = ga.Actor.Nombre, Personaje = ga.Personaje })));
 
               
-
+            CreateMap<Genero,ActualizarGeneroDto>().ReverseMap();
             CreateMap<CrearComentarioDTO, Comentario>();
             CreateMap<Comentario, ComentarioDTO>();
 

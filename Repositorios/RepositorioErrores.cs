@@ -9,7 +9,7 @@ namespace MinimalAPIPeliculas.Repositorios
         {
             this._context = context;
         }
-        public async Task Crear(Error error)
+        public async Task Crear(MinimalAPIPeliculas.Entidades.Error error)
         {
             _context.Errores.Add(error);
             await _context.SaveChangesAsync();
