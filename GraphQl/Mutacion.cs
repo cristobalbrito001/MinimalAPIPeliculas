@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HotChocolate.Authorization;
 using MinimalAPIPeliculas.DTOs;
 using MinimalAPIPeliculas.Entidades;
 using MinimalAPIPeliculas.Repositorios;
@@ -7,7 +8,9 @@ namespace MinimalAPIPeliculas.GraphQl
 {
     public class Mutacion
     {
+
         [Serial]
+        [Authorize(Policy ="admin")]
         public async Task<GeneroDTO> CrearGenero([Service] IRepositorioGeneros repositorio, [Service] IMapper mapper, CrearGeneroDTO crearGeneroDTO)
         {
             var genero = mapper.Map<Genero>(crearGeneroDTO);

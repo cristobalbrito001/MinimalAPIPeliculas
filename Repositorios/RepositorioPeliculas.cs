@@ -110,7 +110,7 @@ namespace MinimalAPIPeliculas.Repositorios
             }
             if (peliculaFilterDTO.GeneroId != 0)
             {
-                peliculasQuerible = peliculasQuerible.Where(p => p.GeneroPeliculas.Select(gp => gp.GeneroId).Contains(peliculaFilterDTO.GeneroId));
+                peliculasQuerible = peliculasQuerible.Where(p => p.GeneroPeliculas.Select(gp => gp.GeneroId ).Contains(peliculaFilterDTO.GeneroId));
             }
             if (!string.IsNullOrWhiteSpace(peliculaFilterDTO.CampoOrdenar))
             {

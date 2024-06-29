@@ -1,4 +1,5 @@
-﻿using MinimalAPIPeliculas.Entidades;
+﻿using HotChocolate.Authorization;
+using MinimalAPIPeliculas.Entidades;
 
 namespace MinimalAPIPeliculas.GraphQl
 {
