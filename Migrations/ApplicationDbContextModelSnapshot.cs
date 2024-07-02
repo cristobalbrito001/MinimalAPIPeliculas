@@ -291,7 +291,7 @@ namespace MinimalAPIPeliculas.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Comentarios");
+                    b.ToTable("Comentario");
                 });
 
             modelBuilder.Entity("MinimalAPIPeliculas.Entidades.Error", b =>
